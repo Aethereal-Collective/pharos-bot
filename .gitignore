@@ -1,0 +1,6 @@
+pvt.txt
+recipients.txt
+token.txt
+
+__pycache__/
+*.pyc

@@ -14,7 +14,6 @@ from config import (
 
 TOKEN_FILE = "token.txt"
 
-# === Bearer Token ===
 LOGIN_MESSAGE = "pharos"
 
 LOGIN_HEADERS = {
@@ -38,9 +37,7 @@ LOGIN_HEADERS = {
 
 def is_token_valid(token: str) -> bool:
     try:
-        # JWT format: header.payload.signature
         payload_encoded = token.split(".")[1]
-        # Padding base64
         padding = "=" * (4 - len(payload_encoded) % 4)
         payload_encoded += padding
 
@@ -51,7 +48,7 @@ def is_token_valid(token: str) -> bool:
         now = int(time.time())
         return now < exp
     except Exception as e:
-        print("⚠️ Gagal cek validitas token:", e)
+        print("⚠️ Failed to check token validity:", e)
         return False
 
 
@@ -70,13 +67,11 @@ def save_token_to_file(token: str):
 
 
 def get_bearer_token():
-    # CHECK LOCAL TOKEN
     token = load_token_from_file()
     if token:
-        print("ℹ️ Menggunakan token dari file lokal")
+        print("ℹ️ Using token from local file")
         return token
 
-    # IF NO TOKEN OR TOKEN IS EXPIRED
     message_encoded = encode_defunct(text=LOGIN_MESSAGE)
     signed_message = w3.eth.account.sign_message(message_encoded, private_key=private_key)
     signature = w3.to_hex(signed_message.signature)
@@ -89,10 +84,10 @@ def get_bearer_token():
         data = response.json()
         token = data.get("data", {}).get("jwt")
         if not token:
-            raise Exception(f"Token tidak ditemukan di response: {data}")
+            raise Exception(f"Token not found in response: {data}")
 
         save_token_to_file(token)
-        print("ℹ️ Token baru berhasil didapat dan disimpan")
+        print("ℹ️ New token obtained and saved successfully")
         return token
     else:
-        raise Exception(f"Login gagal: {response.status_code} {response.text}")
+        raise Exception(f"Login failed: {response.status_code} {response.text}")

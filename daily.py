@@ -53,13 +53,13 @@ while True:
     print("\n🔍 Checking daily sign-in status...")
     status = check_signin_status(sender_address)
 
-    if status == "1111222":
+    if status == "1111022":
         print("🟡 Not signed in yet. Attempting to sign in...")
         perform_signin(sender_address)
         print("⏲️ Waiting 24 hours until next check.")
         countdown(86400)  # 24 hours
 
-    elif status == "1111022":
+    elif status == "1111222":
         print("🟢 Already signed in today.")
         print("⏲️ Will check again in 2 hours.")
         countdown(7200)  # 2 hours
